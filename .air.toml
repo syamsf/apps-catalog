@@ -1,0 +1,22 @@
+# Hot reload for local development: make dev
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  # keeps the swagger docs in sync with the handler comments
+  pre_cmd = ["go generate ./internal/api"]
+  cmd = "go build -o ./tmp/portal ./cmd/portal"
+  entrypoint = ["./tmp/portal", "serve"]
+  include_ext = ["go", "sql", "yaml"]
+  exclude_dir = ["tmp", "web", "node_modules", "internal/web/dist", "internal/api/docs", "docs", "tools", ".git", ".github"]
+  exclude_regex = ["_test\\.go$"]
+  delay = 500
+  send_interrupt = true
+  kill_delay = "3s"
+  stop_on_error = true
+
+[log]
+  main_only = true
+
+[misc]
+  clean_on_exit = true

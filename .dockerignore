@@ -1,0 +1,8 @@
+.git
+.github
+**/node_modules
+internal/web/dist
+docs
+*.md
+tmp
+tools

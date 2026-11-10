@@ -1,0 +1,27 @@
+# Hot reload under delve: make debug
+# Attach your editor to localhost:2345 (VS Code: "Connect to server", GoLand: "Go Remote").
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  pre_cmd = ["go generate ./internal/api"]
+  # no optimizations so breakpoints and variables work
+  cmd = "go build -gcflags='all=-N -l' -o ./tmp/portal-debug ./cmd/portal"
+  entrypoint = [
+    "go", "tool", "-modfile=tools/go.mod", "dlv", "exec",
+    "--headless", "--listen=127.0.0.1:2345", "--api-version=2", "--accept-multiclient", "--continue",
+    "./tmp/portal-debug", "--", "serve",
+  ]
+  include_ext = ["go", "sql", "yaml"]
+  exclude_dir = ["tmp", "web", "node_modules", "internal/web/dist", "internal/api/docs", "docs", "tools", ".git", ".github"]
+  exclude_regex = ["_test\\.go$"]
+  delay = 500
+  send_interrupt = true
+  kill_delay = "3s"
+  stop_on_error = true
+
+[log]
+  main_only = true
+
+[misc]
+  clean_on_exit = true

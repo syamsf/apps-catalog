@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: portal
+      POSTGRES_PASSWORD: portal
+      POSTGRES_DB: portal
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portal"]
+      interval: 3s
+      retries: 10
+
+  portal:
+    build: .
+    environment:
+      DATABASE_URL: postgres://portal:portal@db:5432/portal?sslmode=disable
+      # for `docker compose exec portal /portal import`
+      CATALOG_DIR: /catalog
+      LOG_FORMAT: console
+      # login, leave OIDC_ISSUER empty to run without it
+      OIDC_ISSUER: ""
+      OIDC_CLIENT_ID: app-catalog
+      OIDC_CLIENT_SECRET: change-me
+      HTTP_PUBLIC_URL: http://localhost:8080
+      AUTH_ADMIN_GROUP: portal-admins
+      # username and password sign-in, add an admin with:
+      # docker compose exec portal /portal user add -admin <username>
+      AUTH_LOCAL_LOGIN: "false"
+    volumes:
+      - ./catalog:/catalog:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

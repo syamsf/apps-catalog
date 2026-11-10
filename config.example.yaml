@@ -1,0 +1,45 @@
+# Copy to config.yaml and run: portal serve -config config.yaml
+# Every key can also be set with an env var, which wins over this file:
+# health.interval -> HEALTH_INTERVAL, oidc.client_secret -> OIDC_CLIENT_SECRET
+
+database:
+  url: postgres://portal:portal@localhost:5432/portal?sslmode=disable
+
+http:
+  addr: ":8080"
+  # base url people use, needed for login
+  public_url: http://localhost:8080
+
+catalog:
+  # yaml catalog for `portal import`, a one time import
+  dir: ./catalog
+
+health:
+  # 0 turns health checks off
+  interval: 60s
+  timeout: 5s
+  # PEM bundle for internal CAs
+  ca_file: ""
+
+oidc:
+  # login is off when empty
+  issuer: ""
+  client_id: app-catalog
+  # better set this with OIDC_CLIENT_SECRET
+  client_secret: ""
+
+auth:
+  # members of this sso group are portal admins
+  admin_group: portal-admins
+  # sign in with a username and password stored in the portal, can be on
+  # together with oidc. Add the first admin with: portal user add -admin <name>
+  local_login: false
+  session_ttl: 12h
+  # where sso users go after sign out, e.g. Authelia's logout page
+  logout_url: ""
+
+log:
+  # debug, info, warn, error
+  level: info
+  # json or console
+  format: json

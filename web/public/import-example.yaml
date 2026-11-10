@@ -1,0 +1,60 @@
+# Dev Portal import file. Upload it on Admin > Apps > Import,
+# or run: portal import import-example.yaml
+# Format: docs/import.md
+version: 1
+apps:
+  - id: grafana
+    name: Grafana
+    description: Dashboards for all services
+    owner: platform
+    contact: platform-team@yourcompany.id
+    category: monitoring
+    runs_on: kubernetes
+    version: v10.4.2
+    start_here: true
+    visible_to: everyone
+    icon_color: orange
+    icon: chart-line
+    health_url: /api/health
+    urls:
+      prod: https://grafana.internal.yourcompany.id
+      staging: https://grafana.staging.yourcompany.id
+    links:
+      docs: https://grafana.com/docs
+    access: Login with SSO
+
+  - id: billing-api
+    name: Billing API
+    description: Invoices and payment status for internal tools
+    owner: payments
+    contact: payments@yourcompany.id
+    category: api
+    runs_on: kubernetes
+    visible_to: [payments, finance]
+    urls:
+      prod: https://billing-api.internal.yourcompany.id
+    links:
+      repo: https://git.yourcompany.id/payments/billing-api
+      ci: https://ci.yourcompany.id/payments/billing-api
+    access: Ask in #payments for a token
+
+  - id: vault
+    name: Vault
+    description: Secrets for apps and CI
+    owner: security
+    category: security
+    runs_on: VM
+    visible_to: [security]
+    urls:
+      prod: https://vault.internal.yourcompany.id
+
+  - id: runbooks
+    name: Runbooks
+    description: On-call runbooks for platform services
+    owner: platform
+    category: documentation
+    runs_on: kubernetes
+    # [] would mean only admins see it
+    visible_to: [platform]
+    urls:
+      prod: https://runbooks.internal.yourcompany.id
